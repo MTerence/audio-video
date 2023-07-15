@@ -16,9 +16,11 @@ extern "C" {
     #define DEVICE_NAME "audio=线路输入 (3- 魅声T800)"
     #define FILEPATH "F:/"
 #else
+    //查看可用设备
+    //ffmpeg -f avfoundation -list_devices true -i dummy
     #define FMT_NAME "avfoundation"
     #define DEVICE_NAME ":1"
-    #define FILEPATH "/Users/kwai1/Desktop"
+    #define FILEPATH "/Users/kwai1/Desktop/"
 #endif
 
 RecordThread::RecordThread(QObject *parent) : QThread(parent) {
@@ -98,9 +100,11 @@ void RecordThread::run() {
         //不断采集
         ret = av_read_frame(ctx, pkt);
         if (ret == 0) { //读取成功
+            qDebug() << "av_read_frame 资源写入";
             file.write((const char *) pkt->data, pkt->size);
         } else if (ret == AVERROR(EAGAIN)) { //资源临时不可用
-            continue;
+            qDebug() << "av_read_frame 资源不可用";
+            //continue;
         } else { //其他错误
             char errbuf[1024];
             av_strerror(ret, errbuf, sizeof(errbuf));

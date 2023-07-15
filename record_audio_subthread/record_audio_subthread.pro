@@ -34,6 +34,9 @@ win32 {
 macx {
     FFMPEG_HOME = /usr/local/Cellar/ffmpeg/6.0
     SDL_HOME = /usr/local/Cellar/sdl2/2.28.1
+    QMAKE_INFO_PLIST = mac/info.plist
+    DISTFILES += \
+        mac/info.plist
 }
 
 # 设置头文件路径

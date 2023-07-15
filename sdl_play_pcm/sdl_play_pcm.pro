@@ -10,10 +10,12 @@ CONFIG += c++17
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    playthread.cpp
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    playthread.h
 
 FORMS += \
     mainwindow.ui
@@ -23,16 +25,13 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-
 win32 {
-    FFMPEG_HOME = F:/Dev/ffmpeg-6.0
     SDL_HOME = F:/Dev/SDL2-2.28.1/x86_64-w64-mingw32
 }
 
 macx {
-    FFMPEG_HOME = /usr/local/Cellar/ffmpeg/6.0
     SDL_HOME = /usr/local/Cellar/sdl2/2.28.1
-    QMAKE_INFO_PLIST = mac/Info.plist
+    QMAKE_INFO_PLIST = mac/info.plist
     DISTFILES += \
         mac/info.plist
 }
@@ -41,15 +40,6 @@ macx {
 INCLUDEPATH += $${FFMPEG_HOME}/include
 
 # 设置库文件路径
-LIBS += -L$${FFMPEG_HOME}/lib \
-        -lavcodec \
-        -lavdevice \
-        -lavfilter \
-        -lavformat \
-        -lavutil \
-        -lpostproc \
-        -lswscale \
-        -lswresample
 
 INCLUDEPATH += $${SDL_HOME}/include
 LIBS += -L$${SDL_HOME}/lib \

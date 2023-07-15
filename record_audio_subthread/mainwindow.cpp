@@ -27,7 +27,7 @@ void MainWindow::on_audioButton_clicked()
 
         ui->audioButton->setText("结束录音");
     } else { //点击了结束录制
-        _recordThread->isInterruptionRequested();
+        _recordThread->requestInterruption();
         _recordThread = nullptr;
         ui->audioButton->setText("开始录音");
     }

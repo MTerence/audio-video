@@ -3,6 +3,7 @@
 
 #include "QThread"
 #include "QFile"
+#include <QThread>
 
 extern "C" {
 #include <libavdevice/avdevice.h>
@@ -16,8 +17,8 @@ extern "C" {
     #define FILENAME "F:/out.pcm"
 #else
     #define FMT_NAME "avfoundation"
-    #define DEVICE_NAME ":1"
-    #define FILENAME "/Users/kwai1/Desktop/out.wav"
+    #define DEVICE_NAME ":2"
+    #define FILENAME "/Users/kwai1/Desktop/out.pcm"
 #endif
 
 void logThread() {
@@ -57,7 +58,6 @@ void MainWindow::on_recordButton_clicked()
         qDebug() << "打开设备失败" << errbuf;
         return;
     }
-
     // 文件名
     QFile file(FILENAME);
 
@@ -68,15 +68,31 @@ void MainWindow::on_recordButton_clicked()
         avformat_close_input(&ctx);
         return;
     }
-
+    qDebug() << "----------2";
+    QThread::msleep(5000);
     // 采集次数
-    int count = 50;
-    AVPacket pkt;
-    while (count-- > 0 && av_read_frame(ctx, &pkt) == 0) {
-        // 数据写入文件
-        file.write((const char *) pkt.data, pkt.size);
+    int count = 100;
+    AVPacket *pkt = av_packet_alloc();
+    while (count > 0) {
+        ret = av_read_frame(ctx, pkt);
+        qDebug() << "count=" << count << "ret=" << ret;
+        if ( ret == 0) {
+            count --;
+            qDebug() << "=========count" << count;
+            // 数据写入文件
+            file.write((const char *) pkt->data, pkt->size);
+        } else if (ret == AVERROR(EAGAIN)) {
+            qDebug() << "av_read_frame 资源不可用";
+            continue;
+        } else {
+            char errbuf[1024];
+            av_strerror(ret, errbuf, sizeof(errbuf));
+            qDebug() << "av_read_frame error" << errbuf << ret;
+            break;
+        }
     }
 
+    qDebug() << "----------3";
     //关闭文件
     file.close();
 
