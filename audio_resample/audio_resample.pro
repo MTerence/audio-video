@@ -9,15 +9,15 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp \
     audiothread.cpp \
-    ffmpegs.cpp
+    ffmpegs.cpp \
+    main.cpp \
+    mainwindow.cpp
 
 HEADERS += \
-    mainwindow.h \
     audiothread.h \
-    ffmpegs.h
+    ffmpegs.h \
+    mainwindow.h
 
 FORMS += \
     mainwindow.ui
@@ -27,13 +27,13 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32 {
-    FFMPEG_HOME = ...
+
+windows {
+    FFMPEG_HOME = ..
 }
 
 macx {
     FFMPEG_HOME = /usr/local/Cellar/ffmpeg/6.0
-    QMAKE_INFO_PLIST = mac/info.plist
 }
 
 INCLUDEPATH += $${FFMPEG_HOME}/include
@@ -45,5 +45,9 @@ LIBS += -L$${FFMPEG_HOME}/lib \
         -lavutil \
         -lavcodec
 
-DISTFILES += \
-    mac/info.plist
+#INCLUDEPATH += $${FFMPEG_HOME}/include
+
+#LIBS += -L $${FFMPEG_HOME}/lib \
+#        -lavformat \
+#        -lswresample \
+#        -lavutil
